@@ -30,6 +30,22 @@ let app = new Vue({
             } else {
                 alert('Заполните все поля!');
             }
+        },
+        toggleTask(cardId, taskIndex) {
+            const card = this.cards.find(c => c.id === cardId);
+            if (card) {
+                card.tasks[taskIndex].completed = !card.tasks[taskIndex].completed;
+                console.log(`Задача ${taskIndex + 1} в карточке "${card.title}" отмечена как ${card.tasks[taskIndex].completed ? 'выполненная' : 'невыполненная'}`);
+            }
         }
-    }
+    },
+    computed: {
+        totalCompletedTasks() {
+            let total = 0;
+            this.cards.forEach(card => {
+                total += card.tasks.filter(t => t.completed).length;
+            });
+            return total;
+        }
+    },
 })
