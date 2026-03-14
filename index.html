@@ -42,6 +42,11 @@
             {{ newCardTasks.split('\n').filter(t => t.trim()).length }}
         </div>
         
+        <div v-if="isColumn1Blocked" class="blocked-message">
+            Первая колонка ЗАБЛОКИРОВАНА! Во второй колонке 5 карточек.
+            Чтобы разблокировать, завершите все задачи в одной из карточек второй колонки.
+        </div>
+        
         <div class="columns">
             <div class="column">
                 <div class="column-header">

@@ -39,9 +39,13 @@ let app = new Vue({
         toggleTask(cardId, taskIndex) {
             const card = this.cards.find(c => c.id === cardId);
             if (card) {
+                if (card.column === 0 && this.isColumn1Blocked) {
+                    alert('Первая колонка заблокирована! Нельзя отмечать задачи.');
+                    return;
+                }
+                
                 card.tasks[taskIndex].completed = !card.tasks[taskIndex].completed;
                 console.log(`Задача отмечена`);
-                
                 this.checkAndMoveCard(card);
             }
         },
@@ -80,6 +84,7 @@ let app = new Vue({
             }
         },
         
+       
     },
     computed: {
         column1Cards() {
@@ -97,6 +102,9 @@ let app = new Vue({
         isColumn2Full() {
             return this.column2Cards.length >= 5;
         },
+        isColumn1Blocked() {
+            return this.isColumn2Full && this.column1Cards.length > 0;
+        },
         totalCompletedTasks() {
             let total = 0;
             this.cards.forEach(card => {
@@ -105,6 +113,5 @@ let app = new Vue({
             return total;
         }
     },
-    // watch - УДАЛЯЕМ ПОЛНОСТЬЮ!
     
 })

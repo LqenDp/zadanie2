@@ -223,3 +223,34 @@ textarea.form-control {
 .cards-list {
     margin-top: 0;
 }
+
+.column.blocked {
+    background: #f0f0f0;
+    opacity: 0.7;
+    position: relative;
+    pointer-events: none; 
+}
+
+.column.blocked::after {
+    content: "ЗАБЛОКИРОВАНО";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 82, 82, 0.9);
+    color: white;
+    padding: 10px;
+    border-radius: 3px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+.blocked-message {
+    background: #ff5252;
+    color: white;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ff0000;
+    font-weight: bold;
+    text-align: center;
+}
