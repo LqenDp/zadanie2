@@ -159,3 +159,67 @@ textarea.form-control {
 .delete-btn:hover {
     background: #ff0000;
 }
+/* Добавьте в конец файла */
+
+.columns {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.column {
+    flex: 1;
+    background: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #ddd;
+    min-height: 500px;
+}
+
+.column h2 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.count {
+    background: #4CAF50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.column.blocked {
+    background: #f0f0f0;
+    opacity: 0.7;
+    position: relative;
+}
+
+.column.blocked::after {
+    content: "ЗАБЛОКИРОВАНО";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 82, 82, 0.9);
+    color: white;
+    padding: 10px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.blocked-message {
+    color: white;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.cards-list {
+    margin-top: 0;
+}
