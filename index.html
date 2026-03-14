@@ -10,11 +10,41 @@
 <body>
     <div id="app">
     <h1>{{ appName }}</h1>
+    <div style="background: #f9f9f9; padding: 15px; margin-bottom: 20px; border: 1px solid #ddd;">
+        <h3>Новая карточка</h3>
+        <div>
+            <label>Название:</label><br>
+            <input 
+                type="text" 
+                v-model="newCardTitle" 
+                placeholder="Введите название"
+            >
+        </div>
+        <div>
+            <label>Задачи (каждая с новой строки):</label><br>
+            <textarea 
+                v-model="newCardTasks" 
+                placeholder="Задача 1&#10;Задача 2&#10;Задача 3"
+                style="width: 100%; padding: 8px; margin-bottom: 10px; height: 100px;"
+            ></textarea>
+        </div>
+        <button 
+            @click="addCard"
+        >
+            Добавить карточку
+        </button>
+    </div>
+    <div style="background: #f0f0f0; padding: 10px; margin-bottom: 20px;">
+        <p><strong>Проверка привязки:</strong></p>
+        <p>Название: {{ newCardTitle }}</p>
+        <p>Задачи: {{ newCardTasks }}</p>
+    </div>
     
+    <p>Всего карточек: {{ totalCards }}</p>
     <p>Колонка 1: {{ column1Count }} карточек</p>
     <p>Колонка 2: {{ column2Count }} карточек</p>
     <p>Колонка 3: {{ column3Count }} карточек</p>
-    </div>
+</div>
     
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <script src="js/main.js"></script>
