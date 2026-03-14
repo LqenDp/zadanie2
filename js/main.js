@@ -37,7 +37,13 @@ let app = new Vue({
                 card.tasks[taskIndex].completed = !card.tasks[taskIndex].completed;
                 console.log(`Задача ${taskIndex + 1} в карточке "${card.title}" отмечена как ${card.tasks[taskIndex].completed ? 'выполненная' : 'невыполненная'}`);
             }
+        },
+        deleteCard(cardId) {
+        if (confirm('Удалить карточку?')) {
+            this.cards = this.cards.filter(c => c.id !== cardId);
+            console.log('Карточка удалена');
         }
+    }
     },
     computed: {
         totalCompletedTasks() {

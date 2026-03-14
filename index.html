@@ -55,7 +55,10 @@
                 Пока нет карточек. Создайте первую!
             </div>
             <div v-for="(card, index) in cards" :key="index" class="card">
-                <h3 class="card-title">{{ card.title }}</h3>
+                <div class="card-header">
+                    <h3 class="card-title">{{ card.title }}</h3>
+                    <button class="delete-btn" @click="deleteCard(card.id)">✕</button>
+                </div>
                 <ul class="task-list">
                     <li v-for="(task, taskIndex) in card.tasks" class="task-item">
                         <input 

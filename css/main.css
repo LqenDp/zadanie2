@@ -140,3 +140,22 @@ textarea.form-control {
 .filter-btn:hover {
     background: #f0f0f0;
 }
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    background: #ff5252;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-btn:hover {
+    background: #ff0000;
+}
