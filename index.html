@@ -10,161 +10,59 @@
     <div id="app">
         <h1>{{ appName }}</h1>
         
-        <div class="form-container">
-            <h3>Новая карточка</h3>
-            <div class="form-group">
-                <label>Название:</label>
-                <input 
-                    type="text" 
-                    class="form-control"
-                    v-model="newCardTitle" 
-                    placeholder="Введите название"
-                >
-            </div>
-            <div class="form-group">
-                <label>Задачи (каждая с новой строки):</label>
-                <textarea 
-                    class="form-control"
-                    v-model="newCardTasks" 
-                    placeholder="Задача 1&#10;Задача 2&#10;Задача 3"
-                ></textarea>
-            </div>
-            <button 
-                class="btn"
-                @click="addCard"
-            >
-                Добавить карточку
-            </button>
-        </div>
+        <add-card-form
+            :is-adding-blocked="isAddingBlocked"
+            :is-column1-full="isColumn1Full"
+            @add-card="handleAddCard"
+        ></add-card-form>
         
-        <div v-if="newCardTasks.trim()" class="info-box">
-            <strong>Количество задач:</strong> 
-            {{ newCardTasks.split('\n').filter(t => t.trim()).length }}
-        </div>
         
         <div v-if="isColumn1Blocked" class="blocked-message">
             Первая колонка ЗАБЛОКИРОВАНА! Во второй колонке 5 карточек.
             Чтобы разблокировать, завершите все задачи в одной из карточек второй колонки.
         </div>
         
+        
         <div class="columns">
-            <div class="column">
-                <div class="column-header">
-                    <h2> Нужно сделать</h2>
-                    <span class="count">{{ column1Cards.length }}/3</span>
-                </div>
-                
-                <div v-if="column1Cards.length === 0" class="empty-message">
-                    Нет карточек
-                </div>
-                
-                <div v-for="card in column1Cards" :key="card.id" class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">{{ card.title }}</h3>
-                        <button class="delete-btn" @click="deleteCard(card.id)">✕</button>
-                    </div>
-                    <ul class="task-list">
-                        <li v-for="(task, taskIndex) in card.tasks" class="task-item">
-                            <input 
-                                type="checkbox" 
-                                class="task-checkbox"
-                                :checked="task.completed"
-                                @change="toggleTask(card.id, taskIndex)"
-                            >
-                            <span 
-                                class="task-text" 
-                                :class="{ completed: task.completed }"
-                            >
-                                {{ task.text }}
-                            </span>
-                        </li>
-                    </ul>
-                    <div class="task-stats">
-                        Выполнено: {{ card.tasks.filter(t => t.completed).length }}/{{ card.tasks.length }}
-                    </div>
-                </div>
-            </div>
+            <task-column
+                title=" Нужно сделать"
+                :cards="column1Cards"
+                :column-index="0"
+                :max-cards="3"
+                :is-column1-blocked="isColumn1Blocked"
+                @toggle-task="handleToggleTask"
+                @delete-card="handleDeleteCard"
+            ></task-column>
             
-            <div class="column">
-                <div class="column-header">
-                    <h2> В процессе</h2>
-                    <span class="count">{{ column2Cards.length }}/5</span>
-                </div>
-                
-                <div v-if="column2Cards.length === 0" class="empty-message">
-                    Нет карточек
-                </div>
-                
-                <div v-for="card in column2Cards" :key="card.id" class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">{{ card.title }}</h3>
-                        <button class="delete-btn" @click="deleteCard(card.id)">✕</button>
-                    </div>
-                    <ul class="task-list">
-                        <li v-for="(task, taskIndex) in card.tasks" class="task-item">
-                            <input 
-                                type="checkbox" 
-                                class="task-checkbox"
-                                :checked="task.completed"
-                                @change="toggleTask(card.id, taskIndex)"
-                            >
-                            <span 
-                                class="task-text" 
-                                :class="{ completed: task.completed }"
-                            >
-                                {{ task.text }}
-                            </span>
-                        </li>
-                    </ul>
-                    <div class="task-stats">
-                        Выполнено: {{ card.tasks.filter(t => t.completed).length }}/{{ card.tasks.length }}
-                    </div>
-                </div>
-            </div>
+            <task-column
+                title=" В процессе"
+                :cards="column2Cards"
+                :column-index="1"
+                :max-cards="5"
+                :is-column1-blocked="isColumn1Blocked"
+                @toggle-task="handleToggleTask"
+                @delete-card="handleDeleteCard"
+            ></task-column>
             
-            <div class="column">
-                <div class="column-header">
-                    <h2> Готово</h2>
-                    <span class="count">{{ column3Cards.length }}</span>
-                </div>
-                
-                <div v-if="column3Cards.length === 0" class="empty-message">
-                    Нет карточек
-                </div>
-                
-                <div v-for="card in column3Cards" :key="card.id" class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">{{ card.title }}</h3>
-                        <button class="delete-btn" @click="deleteCard(card.id)">✕</button>
-                    </div>
-                    <ul class="task-list">
-                        <li v-for="(task, taskIndex) in card.tasks" class="task-item">
-                            <input 
-                                type="checkbox" 
-                                class="task-checkbox"
-                                :checked="task.completed"
-                                @change="toggleTask(card.id, taskIndex)"
-                            >
-                            <span 
-                                class="task-text" 
-                                :class="{ completed: task.completed }"
-                            >
-                                {{ task.text }}
-                            </span>
-                        </li>
-                    </ul>
-                    <div class="task-stats">
-                        Выполнено: {{ card.tasks.filter(t => t.completed).length }}/{{ card.tasks.length }}
-                    </div>
-                </div>
-            </div>
+            <task-column
+                title=" Готово"
+                :cards="column3Cards"
+                :column-index="2"
+                :max-cards="Infinity"
+                :is-column1-blocked="isColumn1Blocked"
+                @toggle-task="handleToggleTask"
+                @delete-card="handleDeleteCard"
+            ></task-column>
         </div>
         
-        <p style="margin-top: 20px;">Всего карточек: {{ cards.length }}</p>
-        <p>Всего выполненных задач: {{ totalCompletedTasks }}</p>
+        <div class="stats">
+            <p>Всего карточек: {{ cards.length }}</p>
+            <p>Всего выполненных задач: {{ totalCompletedTasks }}</p>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <script src="js/components.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
