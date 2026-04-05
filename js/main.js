@@ -1,4 +1,3 @@
-
 Vue.component('task-card', {
     props: {
         card: Object,
@@ -23,7 +22,7 @@ Vue.component('task-card', {
                         class="task-checkbox"
                         :checked="task.completed"
                         @change="$emit('toggle-task', { cardId: card.id, taskIndex: taskIndex })"
-                        :disabled="card.column === 0 && isColumn1Blocked"
+                        :disabled="card.column === 0 && isColumn1Blocked || card.column === 3"
                     >
                     <span 
                         class="task-text" 
@@ -46,6 +45,10 @@ Vue.component('task-card', {
             <div v-if="card.column === 2 && card.completionDate" class="completion-date">
                  Завершена: {{ card.completionDate }}
             </div>
+            
+            <div v-if="card.column === 3 && card.archiveDate" class="archive-date">
+                 Архивирована: {{ card.archiveDate }}
+            </div>
         </div>
     `,
     computed: {
@@ -67,7 +70,7 @@ Vue.component('task-column', {
         isColumn1Blocked: Boolean
     },
     template: `
-        <div class="column">
+        <div class="column" :class="{ 'archived-column': columnIndex === 3 }">
             <div class="column-header">
                 <h2>{{ title }}</h2>
                 <span class="count">{{ cards.length }}/{{ maxDisplay }}</span>
@@ -190,7 +193,8 @@ Vue.component('add-card-form', {
             this.newCardTasks = '';
         }
     }
-}); 
+});
+
 let app = new Vue({
     el: '#app',
     data: {
@@ -231,16 +235,41 @@ let app = new Vue({
                 title: cardData.title,
                 tasks: tasksList,
                 column: 0,
-                completionDate: null
+                completionDate: null,
+                archiveDate: null
             });
             
             this.saveToLocalStorage();
             console.log('Карточка добавлена!');
         },
         
+        handleArchiveAll() {
+            const activeCards = this.cards.filter(c => c.column !== 3);
+            if (activeCards.length === 0) {
+                alert('Нет активных карточек для архивирования');
+                return;
+            }
+            
+            if (confirm(`Архивировать все ${activeCards.length} активных карточек?`)) {
+                this.cards.forEach(card => {
+                    if (card.column !== 3) {
+                        card.column = 3;
+                        card.archiveDate = new Date().toLocaleString();
+                    }
+                });
+                this.saveToLocalStorage();
+                console.log('Все активные карточки архивированы');
+            }
+        },
+        
         handleToggleTask({ cardId, taskIndex }) {
             const card = this.cards.find(c => c.id === cardId);
             if (!card) return;
+            
+            if (card.column === 3) {
+                alert('Нельзя изменять задачи в архивированной карточке');
+                return;
+            }
             
             if (card.column === 0 && this.isColumn1Blocked) {
                 alert('Первая колонка заблокирована! Нельзя отмечать задачи.');
@@ -264,13 +293,15 @@ let app = new Vue({
         },
         
         checkAndMoveCard(card) {
+            if (card.column === 3) return;
+            
             const completedCount = card.tasks.filter(t => t.completed).length;
             const totalCount = card.tasks.length;
             const percentage = (completedCount / totalCount) * 100;
             
             if (card.column === 0 && percentage > 50) {
                 if (this.column2Cards.length >= 5) {
-                    console.log('❌ Перемещение заблокировано: во второй колонке нет места');
+                    console.log(' Перемещение заблокировано: во второй колонке нет места');
                     return;
                 }
                 
@@ -296,6 +327,9 @@ let app = new Vue({
         },
         column3Cards() {
             return this.cards.filter(c => c.column === 2);
+        },
+        columnArchiveCards() {
+            return this.cards.filter(c => c.column === 3);
         },
         
         isColumn1Full() {
@@ -328,6 +362,10 @@ let app = new Vue({
                 total += card.tasks.filter(t => t.completed).length;
             });
             return total;
+        },
+        
+        hasActiveCards() {
+            return this.cards.some(c => c.column !== 3);
         }
     },
     

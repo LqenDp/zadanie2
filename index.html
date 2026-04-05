@@ -16,16 +16,24 @@
             @add-card="handleAddCard"
         ></add-card-form>
         
+        <div class="archive-all-container">
+            <button 
+                class="btn archive-all-btn" 
+                @click="handleArchiveAll"
+                :disabled="!hasActiveCards"
+            >
+                Архивировать все активные карточки
+            </button>
+        </div>
         
         <div v-if="isColumn1Blocked" class="blocked-message">
             Первая колонка ЗАБЛОКИРОВАНА! Во второй колонке 5 карточек.
             Чтобы разблокировать, завершите все задачи в одной из карточек второй колонки.
         </div>
         
-        
         <div class="columns">
             <task-column
-                title=" Нужно сделать"
+                title="Нужно сделать"
                 :cards="column1Cards"
                 :column-index="0"
                 :max-cards="3"
@@ -35,7 +43,7 @@
             ></task-column>
             
             <task-column
-                title=" В процессе"
+                title="В процессе"
                 :cards="column2Cards"
                 :column-index="1"
                 :max-cards="5"
@@ -45,7 +53,7 @@
             ></task-column>
             
             <task-column
-                title=" Готово"
+                title="Готово"
                 :cards="column3Cards"
                 :column-index="2"
                 :max-cards="Infinity"
@@ -53,16 +61,27 @@
                 @toggle-task="handleToggleTask"
                 @delete-card="handleDeleteCard"
             ></task-column>
+            
+            <task-column
+                title="Архив"
+                :cards="columnArchiveCards"
+                :column-index="3"
+                :max-cards="Infinity"
+                :is-column1-blocked="false"
+                @toggle-task="handleToggleTask"
+                @delete-card="handleDeleteCard"
+            ></task-column>
         </div>
         
         <div class="stats">
             <p>Всего карточек: {{ cards.length }}</p>
+            <p>Активных карточек: {{ cards.length - columnArchiveCards.length }}</p>
+            <p>В архиве: {{ columnArchiveCards.length }}</p>
             <p>Всего выполненных задач: {{ totalCompletedTasks }}</p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
-    <script src="js/components.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
